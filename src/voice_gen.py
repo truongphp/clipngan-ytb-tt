@@ -28,16 +28,30 @@ async def _synthesize_async(
     rate: str,
     max_words_per_cue: int = 8,
 ) -> None:
-    communicate = edge_tts.Communicate(text, voice=voice, rate=rate)
+    try:
+        communicate = edge_tts.Communicate(text, voice=voice, rate=rate, boundary="WordBoundary")
+    except TypeError:
+        communicate = edge_tts.Communicate(text, voice=voice, rate=rate)
+
     word_events = []
+    sentence_events = []
 
     audio_path.parent.mkdir(parents=True, exist_ok=True)
     with open(audio_path, "wb") as audio_file:
         async for chunk in communicate.stream():
-            if chunk["type"] == "audio":
+            ctype = chunk.get("type")
+            if ctype == "audio":
                 audio_file.write(chunk["data"])
-            elif chunk["type"] == "WordBoundary":
+            elif ctype == "WordBoundary":
                 word_events.append(
+                    {
+                        "offset": chunk["offset"],
+                        "duration": chunk["duration"],
+                        "text": chunk["text"],
+                    }
+                )
+            elif ctype == "SentenceBoundary":
+                sentence_events.append(
                     {
                         "offset": chunk["offset"],
                         "duration": chunk["duration"],
@@ -46,21 +60,25 @@ async def _synthesize_async(
                 )
 
     cues = []
-    buf = []
-    for ev in word_events:
-        buf.append(ev)
-        ends_sentence = ev["text"].endswith((".", "!", "?", ";", ":"))
-        if len(buf) >= max_words_per_cue or (ends_sentence and len(buf) >= 3):
+    if word_events:
+        buf = []
+        for ev in word_events:
+            buf.append(ev)
+            ends_sentence = ev["text"].endswith((".", "!", "?", ";", ":"))
+            if len(buf) >= max_words_per_cue or (ends_sentence and len(buf) >= 3):
+                start_ts = buf[0]["offset"]
+                end_ts = buf[-1]["offset"] + buf[-1]["duration"]
+                cue_text = " ".join(item["text"] for item in buf)
+                cues.append((start_ts, end_ts, cue_text))
+                buf = []
+        if buf:
             start_ts = buf[0]["offset"]
             end_ts = buf[-1]["offset"] + buf[-1]["duration"]
             cue_text = " ".join(item["text"] for item in buf)
             cues.append((start_ts, end_ts, cue_text))
-            buf = []
-    if buf:
-        start_ts = buf[0]["offset"]
-        end_ts = buf[-1]["offset"] + buf[-1]["duration"]
-        cue_text = " ".join(item["text"] for item in buf)
-        cues.append((start_ts, end_ts, cue_text))
+    elif sentence_events:
+        for ev in sentence_events:
+            cues.append((ev["offset"], ev["offset"] + ev["duration"], ev["text"]))
 
     srt_lines = []
     for idx, (start_ts, end_ts, cue_text) in enumerate(cues, start=1):
