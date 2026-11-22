@@ -8,11 +8,12 @@ from google.genai import types
 MEMORY_PATH = Path("data/story_memory.json")
 
 
-def _default_series_state(name: str) -> dict:
+def _default_series_state(name: str, genre: str = "trong_sinh") -> dict:
     return {
         "name": name,
+        "genre": genre,
         "book_number": 1,
-        "book_title": "",
+        "book_title": name,
         "current_episode": 0,
         "characters": [],
         "plot_summary": "",
@@ -26,29 +27,28 @@ def load_memory() -> dict:
         return {
             "active_series": "trong_sinh",
             "series": {
-                "trong_sinh": _default_series_state("Trọng Sinh Báo Thù & Tiểu Tam"),
-                "doi_thuong": _default_series_state("Chuyện Đời Thường Ngỡ Ngàng"),
+                "trong_sinh": _default_series_state("Trọng Sinh Báo Thù & Tiểu Tam", "trong_sinh"),
+                "doi_thuong": _default_series_state("Chuyện Đời Thường Ngỡ Ngàng", "doi_thuong"),
             },
         }
     data = json.loads(MEMORY_PATH.read_text(encoding="utf-8"))
     for key, st in data.get("series", {}).items():
         st.setdefault("book_number", 1)
-        st.setdefault("book_title", "")
+        st.setdefault("book_title", st.get("name", key))
+        st.setdefault("genre", "doi_thuong" if key == "doi_thuong" else "trong_sinh")
+        st.setdefault("history", [])
     return data
 
 
 def save_memory(memory: dict) -> None:
     MEMORY_PATH.parent.mkdir(parents=True, exist_ok=True)
-    MEMORY_PATH.write_text(
-        json.dumps(memory, ensure_ascii=False, indent=2),
-        encoding="utf-8",
-    )
+    MEMORY_PATH.write_text(json.dumps(memory, ensure_ascii=False, indent=2), encoding="utf-8")
 
 
 def reset_series_for_next_book(memory: dict, series_key: str) -> dict:
     st = memory["series"][series_key]
     st["book_number"] = int(st.get("book_number", 1)) + 1
-    st["book_title"] = ""
+    st["book_title"] = st.get("name", series_key)
     st["current_episode"] = 0
     st["characters"] = []
     st["plot_summary"] = ""
@@ -78,141 +78,158 @@ def _build_prompt(
     book_num = int(series_state.get("book_number", 1))
     is_continuing = next_ep > 1 and bool(series_state.get("plot_summary"))
     is_finale = next_ep >= episodes_per_book
+    series_name = series_state.get("name", series_key)
 
     genre_guide = (
-        "Thể loại: Drama gia đình, trọng sinh, tiểu tam, báo thù, ngôn tình hiện đại Việt Nam."
-        if series_key == "trong_sinh"
-        else "Thể loại: Những câu chuyện đời thường rất thật ở Việt Nam (bữa cơm gia đình, chia tài sản, tin nhắn gửi nhầm, người thân vay tiền...) nhưng có cú lật kèo khiến người nghe rùng mình không ngờ tới."
+        f"Chủ đề bộ truyện: {series_name}. Phong cách: Drama gia đình, trọng sinh, tiểu tam, báo thù hoặc câu chuyện đời thường có cú lật kèo chấn động ở Việt Nam."
     )
 
     if is_continuing:
         continuity_block = f"""
 BỐI CẢNH CÁC TẬP TRƯỚC (BẮT BUỘC NỐI TIẾP LIỀN MẠCH):
-- Đây là Bộ {book_num} — Tập {next_ep}/{episodes_per_book}.
+- Bộ {book_num} — Tập {next_ep}/{episodes_per_book}.
 - Nhân vật hiện có: {json.dumps(series_state.get("characters", []), ensure_ascii=False)}
-- Tóm tắt diễn biến đến hết Tập {next_ep - 1}: {series_state.get("plot_summary", "")}
+- Tóm tắt đến hết Tập {next_ep - 1}: {series_state.get("plot_summary", "")}
 - Nút thắt cuối tập trước cần giải quyết ngay đầu tập này: {series_state.get("last_cliffhanger", "")}
 """
     else:
-        continuity_block = f"- Đây là Bộ {book_num} — Tập 1/{episodes_per_book} (mở màn một câu chuyện hoàn toàn mới, đặt tên nhân vật Việt Nam tự nhiên, gần gũi)."
+        continuity_block = f"- Bộ {book_num} — Tập 1/{episodes_per_book} (mở màn câu chuyện mới theo chủ đề '{series_name}', đặt tên nhân vật Việt Nam tự nhiên)."
 
     ending_rule = (
-        f"- ĐÂY LÀ TẬP CUỐI (Tập {next_ep}/{episodes_per_book}): BẮT BUỘC đẩy lên đại cao trào, lật ngửa toàn bộ quân bài, cho kẻ xấu nhận quả báo đích đáng và khép lại một CÁI KẾT TRỌN VẸN, HẢ DẠ (không bỏ lửng sang tập sau)."
+        f"- ĐÂY LÀ TẬP CUỐI (Tập {next_ep}/{episodes_per_book}): Đẩy đại cao trào, lật ngửa toàn bộ sự thật, cho kẻ xấu nhận quả báo đích đáng và khép lại CÁI KẾT TRỌN VẸN, HẢ DẠ."
         if is_finale
-        else "- Cuối tập (Cliffhanger): Giải quyết gọn 1 mâu thuẫn nhỏ cho hả dạ, rồi cài ngay một bí mật lớn hơn để người nghe phải bấm theo dõi chờ tập sau."
+        else "- Cuối tập (Cliffhanger): Giải quyết gọn 1 mâu thuẫn nhỏ cho hả dạ, rồi cài ngay một bí mật lớn hơn để người nghe hóng tập tiếp theo."
     )
+    topic_block = f"\n- Gợi ý riêng cho tập này: {custom_topic}" if custom_topic else ""
 
-    topic_block = f"\n- Gợi ý chủ đề riêng từ người dùng: {custom_topic}" if custom_topic else ""
-
-    return f"""Bạn là biên kịch audio drama tiếng Việt chuyên viết truyện giữ chân người nghe YouTube & TikTok.
+    return f"""Bạn là biên kịch audio drama tiếng Việt chuyên nghiệp cho kênh "Audio Đi Ngủ".
 {genre_guide}
 {continuity_block}{topic_block}
 
-YÊU CẦU CẤU TRÚC KỊCH BẢN (BẮT BUỘC):
-1. Kể ở ngôi thứ nhất ("tôi"), giọng kể đời thường, sắc bén, giàu cảm xúc, câu ngắn dễ đọc thành tiếng.
-2. Độ dài phần "script_full": khoảng 1.300 đến 1.550 từ tiếng Việt (tương đương 7–10 phút đọc audio).
-3. Công thức giữ chân tuyệt đối:
-   - 15 giây đầu (Hook chấn động): CẤM chào hỏi ở câu đầu tiên. Vào thẳng 2–3 câu thoại chí mạng hoặc khoảnh khắc sốc nhất.
-   - Micro-Intro ngay sau Hook (đúng 1 câu ngắn): Ngay sau 2–3 câu Hook mở màn đó, chèn tự nhiên câu: "Bạn đang nghe truyện tại kênh Audio Đi Ngủ." rồi nối liền vào mạch truyện.
-   - Nửa đầu (~40%): Đẩy mâu thuẫn lên cao, để người nghe tức thay nhân vật chính.
-   - Giữa truyện (~50% - Midpoint Twist): Tung ra một chi tiết lật kèo hoặc bằng chứng bất ngờ khiến cục diện đảo ngược hoàn toàn.
+YÊU CẦU BẮT BUỘC:
+1. Viết kịch bản phân vai thành mảng "segments" gồm 16 đến 26 đoạn, tổng cộng khoảng 1.300 đến 1.550 từ tiếng Việt (7–10 phút đọc audio).
+2. Mỗi phần tử trong "segments" có:
+   - "role": chọn 1 trong 3 giá trị: "narrator" (người kể ngôi thứ nhất "tôi"), "female" (lời thoại nhân vật nữ), "male" (lời thoại nhân vật nam).
+   - "text": lời đọc tiếng Việt thuần (KHÔNG dấu sao *, KHÔNG ngoặc ghi chú cảm xúc, KHÔNG ghi tên nhân vật trước câu thoại).
+3. Công thức giữ chân 3 nhịp:
+   - Segment 0 (Hook 15 giây đầu): CẤM chào hỏi. Vào thẳng khoảnh khắc sốc nhất hoặc câu thoại chí mạng.
+   - Segment 1 (Micro-Intro): Bắt đầu bằng đúng 1 câu ngắn "Bạn đang nghe truyện tại kênh Audio Đi Ngủ." rồi dẫn tiếp vào mạch truyện.
+   - Giữa tập (~50%): Cú lật kèo (Midpoint Twist) làm đảo ngược cục diện.
    {ending_rule}
-4. "script_full" là VĂN BẢN THUẦN ĐỂ ĐỌC AUDIO: KHÔNG dùng dấu sao (*), KHÔNG dùng tiêu đề chương, KHÔNG dùng ngoặc đơn ghi chú cảm xúc như (cười nhạt) hay [nhạc nổi lên].
+4. Chỉ định "peak_segment_index": số thứ tự (0-based) của đoạn bắt đầu phần cao trào kịch tính nhất để cắt clip TikTok 75 giây.
 
-TRẢ VỀ DUY NHẤT MỘT OBJECT JSON HỢP LỆ theo đúng schema sau:
+TRẢ VỀ DUY NHẤT 1 OBJECT JSON HỢP LỆ:
 {{
   "episode_number": {next_ep},
   "is_finale": {str(is_finale).lower()},
-  "book_title": "Tên ngắn gọn cho cả bộ truyện (tối đa 55 ký tự, không ghi số tập)",
+  "book_title": "{series_name[:55]}",
   "title_youtube": "Tiêu đề YouTube kịch tính, tối đa 85 ký tự, có chữ Tập {next_ep}",
   "thumb_badge": "{'TẬP CUỐI' if is_finale else f'TẬP {next_ep}'}",
-  "thumb_line1": "3 đến 5 chữ viết hoa cực gắt cho dòng 1 thumbnail",
-  "thumb_line2": "3 đến 6 chữ viết hoa gây tò mò cho dòng 2 thumbnail",
-  "script_full": "Toàn bộ nội dung truyện 1.300 - 1.550 từ tiếng Việt thuần để đọc TTS...",
-  "tiktok_caption": "Caption ngắn 2 dòng kích thích tò mò kèm lời kêu gọi sang YouTube nghe bản full",
-  "tiktok_hashtags": "#truyenaudio #dramagiadinh #trongsinh #kectruyen #ngontinh",
-  "youtube_description": "Mô tả YouTube 3-4 dòng tóm tắt không spoil kết + lời mời đăng ký kênh",
-  "youtube_tags": ["truyện audio", "drama gia đình", "trọng sinh", "ngôn tình", "audio đi ngủ"],
-  "characters": ["Tên - vai trò ngắn gọn"],
-  "plot_summary_update": "Tóm tắt gộp toàn bộ mạch truyện tính đến hết Tập {next_ep} trong 4-6 câu",
-  "last_cliffhanger": "Mô tả ngắn nút thắt cuối Tập {next_ep} (hoặc ghi Đã kết thúc trọn bộ nếu là tập cuối)"
+  "thumb_line1": "3 đến 5 chữ viết hoa cực gắt",
+  "thumb_line2": "3 đến 6 chữ viết hoa gây tò mò",
+  "peak_segment_index": 0,
+  "segments": [
+    {{"role": "narrator", "text": "..."}},
+    {{"role": "male", "text": "..."}},
+    {{"role": "female", "text": "..."}}
+  ],
+  "tiktok_caption": "Caption 2 dòng kích thích tò mò + kêu gọi sang YouTube Audio Đi Ngủ nghe bản full",
+  "tiktok_hashtags": "#truyenaudio #audiodingu #dramagiadinh #trongsinh #ngontinh",
+  "youtube_description": "Mô tả 3 dòng hấp dẫn không spoil kết",
+  "youtube_tags": ["truyện audio", "audio đi ngủ", "drama gia đình", "trọng sinh", "ngôn tình"],
+  "characters": ["Tên - vai trò ngắn"],
+  "plot_summary_update": "Tóm tắt mạch truyện đến hết Tập {next_ep} trong 4-6 câu",
+  "last_cliffhanger": "Nút thắt cuối Tập {next_ep}"
 }}
 """
 
 
-def _polish_with_groq(script_text: str) -> str:
+def _call_groq_fallback(prompt: str) -> dict:
     groq_key = os.getenv("GROQ_API_KEY", "").strip()
-    if not groq_key or os.getenv("USE_GROQ_POLISH", "false").lower() != "true":
-        return script_text
-    try:
-        from groq import Groq
+    if not groq_key:
+        raise RuntimeError("Không có GROQ_API_KEY để dự phòng.")
+    from groq import Groq
 
-        client = Groq(api_key=groq_key)
-        resp = client.chat.completions.create(
-            model="llama-3.3-70b-versatile",
-            temperature=0.7,
-            messages=[
-                {
-                    "role": "system",
-                    "content": (
-                        "Bạn là biên tập viên lời thoại audio drama tiếng Việt. "
-                        "Hãy chuốt lại đoạn truyện sau để lời thoại sắc sảo, tự nhiên, kịch tính hơn "
-                        "nhưng GIỮ NGUYÊN cốt truyện, độ dài và KHÔNG thêm ký tự đặc biệt hay tiêu đề."
-                    ),
-                },
-                {"role": "user", "content": script_text},
-            ],
-        )
-        polished = (resp.choices[0].message.content or "").strip()
-        if len(polished.split()) >= len(script_text.split()) * 0.75:
-            print("[StoryEngine] Đã chuốt lời thoại bằng Groq.")
-            return polished
-    except Exception as exc:
-        print(f"[StoryEngine] Bỏ qua bước chuốt Groq ({exc}), dùng bản Gemini.")
-    return script_text
+    print("[StoryEngine] Chuyển sang phao dự phòng Groq (llama-3.3-70b-versatile)...")
+    client = Groq(api_key=groq_key)
+    resp = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        temperature=0.8,
+        response_format={"type": "json_object"},
+        messages=[
+            {"role": "system", "content": "Bạn là biên kịch audio drama tiếng Việt, luôn trả về JSON hợp lệ."},
+            {"role": "user", "content": prompt},
+        ],
+    )
+    return _extract_json(resp.choices[0].message.content or "")
 
 
-def generate_episode(series_key: str = "trong_sinh", custom_topic: str = "") -> tuple[dict, dict]:
-    api_key = os.environ["GEMINI_API_KEY"]
+def generate_episode(
+    series_key: str = "trong_sinh",
+    custom_topic: str = "",
+    series_name: str = "",
+    start_new_book: bool = False,
+) -> tuple[dict, dict]:
     episodes_per_book = int(os.getenv("EPISODES_PER_BOOK", "5"))
     memory = load_memory()
+
     if series_key not in memory["series"]:
-        series_key = "trong_sinh"
+        display_name = series_name or custom_topic or series_key.replace("_", " ").title()
+        memory["series"][series_key] = _default_series_state(display_name, series_key)
+    elif start_new_book:
+        memory = reset_series_for_next_book(memory, series_key)
+        if series_name:
+            memory["series"][series_key]["name"] = series_name
+            memory["series"][series_key]["book_title"] = series_name
+
     series_state = memory["series"][series_key]
-
     prompt = _build_prompt(series_key, series_state, episodes_per_book, custom_topic)
-    client = genai.Client(api_key=api_key)
 
-    models_to_try = ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite"]
-    last_error = None
     episode = None
+    last_error = None
+    gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
 
-    for model_name in models_to_try:
-        try:
-            print(f"[StoryEngine] Đang tạo kịch bản bằng {model_name}...")
-            response = client.models.generate_content(
-                model=model_name,
-                contents=prompt,
-                config=types.GenerateContentConfig(
-                    temperature=0.85,
-                    response_mime_type="application/json",
-                ),
-            )
-            episode = _extract_json(response.text)
-            break
-        except Exception as exc:
-            print(f"[StoryEngine] Lỗi với {model_name}: {exc}")
-            last_error = exc
+    if gemini_key:
+        client = genai.Client(api_key=gemini_key)
+        for model_name in ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite"]:
+            try:
+                print(f"[StoryEngine] Đang tạo kịch bản đa vai bằng {model_name}...")
+                response = client.models.generate_content(
+                    model=model_name,
+                    contents=prompt,
+                    config=types.GenerateContentConfig(
+                        temperature=0.85,
+                        response_mime_type="application/json",
+                    ),
+                )
+                episode = _extract_json(response.text)
+                break
+            except Exception as exc:
+                print(f"[StoryEngine] Lỗi {model_name}: {exc}")
+                last_error = exc
 
     if episode is None:
-        raise RuntimeError(f"Không tạo được kịch bản từ Gemini: {last_error}")
+        try:
+            episode = _call_groq_fallback(prompt)
+        except Exception as groq_exc:
+            raise RuntimeError(f"Cả Gemini ({last_error}) và Groq ({groq_exc}) đều lỗi.")
 
-    episode["script_full"] = _polish_with_groq(episode["script_full"])
+    segments = episode.get("segments")
+    if not segments or not isinstance(segments, list):
+        fallback_text = episode.get("script_full", "")
+        segments = [{"role": "narrator", "text": fallback_text}]
+    episode["segments"] = [
+        {"role": s.get("role", "narrator"), "text": str(s.get("text", "")).strip()}
+        for s in segments
+        if str(s.get("text", "")).strip()
+    ]
+
     episode["series_key"] = series_key
     episode["book_number"] = int(series_state.get("book_number", 1))
     episode["episodes_per_book"] = episodes_per_book
 
     next_ep = int(episode.get("episode_number", series_state["current_episode"] + 1))
+    episode["episode_number"] = next_ep
     episode["is_finale"] = bool(next_ep >= episodes_per_book)
 
     series_state["current_episode"] = next_ep
@@ -223,11 +240,7 @@ def generate_episode(series_key: str = "trong_sinh", custom_topic: str = "") -> 
     series_state["plot_summary"] = episode.get("plot_summary_update", series_state.get("plot_summary", ""))
     series_state["last_cliffhanger"] = episode.get("last_cliffhanger", "")
     series_state.setdefault("history", []).append(
-        {
-            "book": episode["book_number"],
-            "episode": next_ep,
-            "title": episode.get("title_youtube", ""),
-        }
+        {"book": episode["book_number"], "episode": next_ep, "title": episode.get("title_youtube", "")}
     )
     memory["active_series"] = series_key
     return episode, memory
