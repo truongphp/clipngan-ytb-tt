@@ -1,0 +1,9 @@
+{
+"name": "clipngan-thumb",
+"version": "1.0.0",
+"type": "module",
+"dependencies": {
+"satori": "^0.12.0",
+"@resvg/resvg-js": "^2.6.2"
+}
+}
