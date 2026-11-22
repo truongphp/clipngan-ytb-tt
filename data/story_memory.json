@@ -4,16 +4,12 @@
     "trong_sinh": {
       "name": "Trọng Sinh Báo Thù & Tiểu Tam",
       "genre": "trong_sinh",
-      "book_number": 1,
+      "book_number": 2,
       "book_title": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 4,
-      "characters": [
-        "Lan - Người vợ trọng sinh đầy bản lĩnh",
-        "Hùng - Gã chồng hèn nhát tham lam",
-        "Người lạ mặt - Kẻ thù cũ nắm giữ bí mật"
-      ],
-      "plot_summary": "Lan đối mặt với gã nhân tình cũ còn sống sau kiếp trước. Cô giăng bẫy khiến cả hắn và Hùng sa lưới cảnh sát. Tuy nhiên, một tin nhắn bí ẩn khẳng định có kẻ đứng sau giật dây mọi thứ. Lan nhận ra mình vẫn chỉ là một phần trong quân cờ lớn hơn.",
-      "last_cliffhanger": "Một tin nhắn nặc danh khẳng định có kẻ đứng sau giật dây vụ tai nạn kiếp trước của Lan vẫn đang theo dõi cô.",
+      "current_episode": 0,
+      "characters": [],
+      "plot_summary": "",
+      "last_cliffhanger": "",
       "history": [
         {
           "book": 1,
@@ -34,6 +30,11 @@
           "book": 1,
           "episode": 4,
           "title": "Tiểu Tam Khoe Thẻ Đen Hào Môn: Màn Lật Mặt Đầy Sóng Gió - Tập 4"
+        },
+        {
+          "book": 1,
+          "episode": 5,
+          "title": "KẺ GIẬT DÂY BỊ LỘ DIỆN: CÁI KẾT ĐẮNG CHO GÃ CHỒNG TỒI - TẬP 5"
         }
       ]
     },
