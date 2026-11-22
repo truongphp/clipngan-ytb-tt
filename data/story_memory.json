@@ -6,14 +6,14 @@
       "genre": "trong_sinh",
       "book_number": 1,
       "book_title": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 2,
+      "current_episode": 3,
       "characters": [
-        "Lan - Người vợ trọng sinh đầy bản lĩnh",
-        "Hùng - Người chồng phản bội hèn hạ",
-        "Người lạ mặt - Kẻ nắm giữ bí mật tập đoàn"
+        "Lan - Người vợ thông minh, sắc sảo",
+        "Hùng - Gã chồng phản bội hèn nhát",
+        "Người lạ mặt - Kẻ nắm giữ bí mật"
       ],
-      "plot_summary": "Lan lật tẩy được Hùng nhưng phát hiện ra hắn chỉ là con tốt trong một âm mưu rửa tiền. Cô nhận được dữ liệu về mạng lưới tội ác và bàng hoàng phát hiện cha dượng mình là kẻ chủ mưu. Lan bị đe dọa trực tiếp khi kẻ thù cử sát thủ đến nhà. Cuộc báo thù giờ đây đã biến thành cuộc chiến sinh tồn giữa Lan và gia đình giả tạo.",
-      "last_cliffhanger": "Một chiếc xe đen bí ẩn đỗ trước nhà Lan, kèm theo lời cảnh báo về sát thủ đã được cử đến. Lan sẽ làm gì để thoát khỏi tử thần ngay trong đêm nay?",
+      "plot_summary": "Lan thoát chết trong gang tấc nhờ sự can thiệp bí ẩn. Cô lật tẩy âm mưu của cha dượng khiến mạng lưới rửa tiền sụp đổ. Hùng trở thành kẻ mất trắng, phải theo chân Lan tìm kiếm sự thật. Một bóng ma từ kiếp trước xuất hiện, đẩy Lan vào tình thế ngàn cân treo sợi tóc.",
+      "last_cliffhanger": "Một chiếc xe lạ bám đuôi Lan, và bóng người ngồi trong đó chính là người mà cô tưởng đã chết trong kiếp trước.",
       "history": [
         {
           "book": 1,
@@ -24,6 +24,11 @@
           "book": 1,
           "episode": 2,
           "title": "Trọng Sinh Báo Thù: Hùng chỉ là con tốt, âm mưu thực sự là gì? - Tập 2"
+        },
+        {
+          "book": 1,
+          "episode": 3,
+          "title": "Tiểu Tam Khoe Thẻ Đen Hào Môn: Cú Lật Kèo Đẫm Máu Đêm Trọng Sinh (Tập 3)"
         }
       ]
     },
