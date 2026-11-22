@@ -1,5 +1,6 @@
 import os
 import random
+import re
 import subprocess
 from pathlib import Path
 
@@ -246,3 +247,93 @@ def build_videos(
         compressed.replace(tt_video)
 
     return yt_video, tt_video
+
+
+def _srt_ts_to_ms(ts: str) -> int:
+    h, m, s, ms = map(int, re.split(r"[:,]", ts.strip()))
+    return ((h * 3600 + m * 60 + s) * 1000) + ms
+
+
+def _ms_to_srt_ts(total_ms: int) -> str:
+    hours = total_ms // 3_600_000
+    minutes = (total_ms % 3_600_000) // 60_000
+    seconds = (total_ms % 60_000) // 1_000
+    millis = total_ms % 1_000
+    return f"{hours:02d}:{minutes:02d}:{seconds:02d},{millis:03d}"
+
+
+def build_full_book_video(
+    episode_pairs: list[tuple[Path, Path]],
+    gameplay_videos: list[Path],
+    bgms: list[Path],
+    output_dir: Path,
+) -> Path:
+    """Nối toàn bộ các tập lẻ (.mp3 + .srt) thành 1 video Full Trọn Bộ 16:9."""
+    output_dir.mkdir(parents=True, exist_ok=True)
+    concat_list = output_dir / "concat_audio.txt"
+    merged_audio = output_dir / "full_book_voice.m4a"
+    merged_srt = output_dir / "full_book_sub.srt"
+
+    lines = [f"file '{mp3.resolve()}'" for mp3, _ in episode_pairs]
+    concat_list.write_text("\n".join(lines), encoding="utf-8")
+
+    _run(
+        [
+            "ffmpeg",
+            "-y",
+            "-f",
+            "concat",
+            "-safe",
+            "0",
+            "-i",
+            str(concat_list),
+            "-c:a",
+            "aac",
+            "-b:a",
+            "128k",
+            str(merged_audio),
+        ]
+    )
+
+    # Dịch mốc thời gian phụ đề nối liền các tập
+    all_cues = []
+    offset_ms = 0
+    cue_idx = 1
+    for mp3_path, srt_path in episode_pairs:
+        if srt_path.exists() and srt_path.stat().st_size > 10:
+            blocks = re.split(r"\r?\n\r?\n", srt_path.read_text(encoding="utf-8").strip())
+            for block in blocks:
+                part_lines = block.splitlines()
+                if len(part_lines) >= 3 and "-->" in part_lines[1]:
+                    start_s, end_s = part_lines[1].split("-->")
+                    new_start = _ms_to_srt_ts(_srt_ts_to_ms(start_s) + offset_ms)
+                    new_end = _ms_to_srt_ts(_srt_ts_to_ms(end_s) + offset_ms)
+                    text_body = "\n".join(part_lines[2:])
+                    all_cues.append(f"{cue_idx}\n{new_start} --> {new_end}\n{text_body}\n")
+                    cue_idx += 1
+        offset_ms += int(get_media_duration(mp3_path) * 1000)
+
+    merged_srt.write_text("\n".join(all_cues), encoding="utf-8")
+
+    full_duration = get_media_duration(merged_audio)
+    selected_video = random.choice(gameplay_videos) if gameplay_videos else None
+    selected_bgm = random.choice(bgms) if bgms else None
+    final_audio = _prepare_mixed_audio(
+        merged_audio, selected_bgm, output_dir / "full_book_mixed.m4a", full_duration
+    )
+
+    full_video = output_dir / "youtube_full_book.mp4"
+    print(f"[VideoBuilder] Đang render bản FULL TRỌN BỘ ({full_duration / 60:.1f} phút)...")
+    _build_single_video(
+        bg_video=selected_video,
+        audio_path=final_audio,
+        srt_path=merged_srt,
+        out_path=full_video,
+        width=1280,
+        height=720,
+        duration=full_duration,
+        crf=25,
+        sub_font_size=22,
+        sub_margin_v=40,
+    )
+    return full_video
