@@ -2,6 +2,7 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
+    // 1. Endpoint đồng bộ tiến độ & Lịch Sử Full Bộ từ GitHub Actions vào D1
     if (url.pathname === "/api/sync-series" && request.method === "POST") {
       const secret = request.headers.get("X-Sync-Secret") || "";
       if (secret !== env.TELEGRAM_BOT_TOKEN) {
@@ -34,11 +35,12 @@ export default {
     }
 
     if (request.method !== "POST") {
-      return new Response("ClipNgan Hub v3 OK", { status: 200 });
+      return new Response("ClipNgan Hub v3.1 (Public + Trend Radar) OK", { status: 200 });
     }
 
     const update = await request.json();
 
+    // 2. Xử lý bấm nút Inline Keyboard
     if (update.callback_query) {
       const cb = update.callback_query;
       const chatId = String(cb.message.chat.id);
@@ -54,11 +56,23 @@ export default {
         const slug = data.replace("run_series:", "");
         const row = await env.DB.prepare("SELECT name FROM series_list WHERE slug = ?").bind(slug).first();
         await triggerWorkflow(env, chatId, slug, row?.name || slug, "", false);
+      } else if (data === "scan_trends") {
+        await sendTrendRadar(env, chatId);
+      } else if (data.startsWith("pick_trend:")) {
+        const slug = data.replace("pick_trend:", "");
+        const row = await env.DB.prepare("SELECT name FROM series_list WHERE slug = ?").bind(slug).first();
+        const topicName = row?.name || slug;
+        await env.DB.prepare(
+          "UPDATE series_list SET status = 'active', current_episode = 0, updated_at = CURRENT_TIMESTAMP WHERE slug = ?"
+        )
+          .bind(slug)
+          .run();
+        await triggerWorkflow(env, chatId, slug, topicName, topicName, true);
       } else if (data === "new_topic_guide") {
         await sendMsg(
           env,
           chatId,
-          "🆕 *TẠO CHỦ ĐỀ MỚI:*\nNhắn theo cú pháp:\n`/moi Tên chủ đề bạn muốn làm`\n\n*Ví dụ:*\n`/moi Cô dâu hào môn báo thù`\n\n👉 Hệ thống sẽ tự tạo nút chủ đề mới trong `/menu` và dựng ngay Tập 1!"
+          "🆕 *TẠO CHỦ ĐỀ MỚI:*\nNhắn theo cú pháp:\n`/moi Tên chủ đề bạn muốn làm`\n\n*Ví dụ:*\n`/moi Cô dâu hào môn báo thù`\n\n👉 Hệ thống sẽ tự tạo nút chủ đề mới trong `/menu` và dựng ngay Tập 1 (Công khai)!"
         );
       } else if (data === "history_full") {
         await sendFullHistory(env, chatId);
@@ -113,7 +127,9 @@ export default {
       return new Response("OK", { status: 200 });
     }
 
-    if (text.startsWith("/moi ")) {
+    if (text === "/trend") {
+      await sendTrendRadar(env, chatId);
+    } else if (text.startsWith("/moi ")) {
       const topicName = text.replace(/^\/moi\s+/, "").trim();
       const slug = slugify(topicName);
       await env.DB.prepare(
@@ -196,24 +212,89 @@ async function sendAdminMenu(env, chatId) {
   const keyboard = [];
   for (const s of activeRows.results || []) {
     keyboard.push([
-      { text: `🔥 ${s.name} (${s.current_episode}/5)`, callback_data: `run_series:${s.slug}` },
+      { text: `🎬 ${s.name} (${s.current_episode}/5)`, callback_data: `run_series:${s.slug}` },
     ]);
   }
   keyboard.push([
+    { text: "🔥 Quét Trend Hôm Nay", callback_data: "scan_trends" },
     { text: "🆕 Tạo Chủ Đề Mới", callback_data: "new_topic_guide" },
-    { text: "📚 Lịch Sử Full Bộ", callback_data: "history_full" },
   ]);
   keyboard.push([
+    { text: "📚 Lịch Sử Full Bộ", callback_data: "history_full" },
     { text: "👥 Quản lý Người dùng", callback_data: "admin_users" },
-    { text: "📦 4 Dự Án & Kênh", callback_data: "menu_projects" },
   ]);
+  keyboard.push([{ text: "📦 4 Dự Án & Kênh", callback_data: "menu_projects" }]);
 
   await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       chat_id: chatId,
-      text: "🎛️ *AUDIO ĐI NGỦ — STUDIO v3*\nBấm vào tên bộ truyện bên dưới để dựng tập tiếp theo:",
+      text: "🎛️ *AUDIO ĐI NGỦ — STUDIO v3.1 (LIVE PUBLIC)*\nBấm tên bộ truyện để dựng tập tiếp theo hoặc quét trend mới:",
+      parse_mode: "Markdown",
+      reply_markup: { inline_keyboard: keyboard },
+    }),
+  });
+}
+
+async function sendTrendRadar(env, chatId) {
+  const ytSeeds = ["truyện audio ", "trọng sinh báo thù ", "drama gia đình ", "tiểu tam "];
+  const seed = ytSeeds[Math.floor(Math.random() * ytSeeds.length)];
+  const picks = [];
+
+  try {
+    const ytResp = await fetch(
+      `https://suggestqueries.google.com/complete/search?client=firefox&ds=yt&hl=vi&gl=VN&q=${encodeURIComponent(seed)}`,
+      { headers: { "User-Agent": "Mozilla/5.0" } }
+    );
+    if (ytResp.ok) {
+      const data = await ytResp.json();
+      for (const item of (data[1] || []).slice(0, 3)) {
+        const clean = String(item).trim();
+        if (clean) picks.push({ source: "YT", title: clean });
+      }
+    }
+  } catch (_) {}
+
+  try {
+    const rssResp = await fetch("https://trends.google.com/trending/rss?geo=VN", {
+      headers: { "User-Agent": "Mozilla/5.0" },
+    });
+    if (rssResp.ok) {
+      const xml = await rssResp.text();
+      const matches = [...xml.matchAll(/<item>[\s\S]*?<title>(?:<!\[CDATA\[)?(.*?)(?:\]\]>)?<\/title>/gi)];
+      for (const m of matches.slice(0, 2)) {
+        const clean = m[1].trim();
+        if (clean) picks.push({ source: "GG", title: `Chuyện đời thường: ${clean}` });
+      }
+    }
+  } catch (_) {}
+
+  if (!picks.length) {
+    await sendMsg(env, chatId, "⚠️ Tạm thời chưa lấy được trend mới, bạn bấm thử lại sau vài giây nhé.");
+    return;
+  }
+
+  const keyboard = [];
+  for (const p of picks) {
+    const slug = slugify(p.title);
+    await env.DB.prepare(
+      `INSERT OR IGNORE INTO series_list (slug, name, book_number, current_episode, status, full_youtube_url, updated_at)
+       VALUES (?, ?, 1, 0, 'trend', '', CURRENT_TIMESTAMP)`
+    )
+      .bind(slug, p.title)
+      .run();
+    keyboard.push([
+      { text: `⚡ [${p.source}] ${p.title.slice(0, 42)}`, callback_data: `pick_trend:${slug}` },
+    ]);
+  }
+
+  await fetch(`https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: "🔥 *RADAR TREND VIỆT NAM HÔM NAY*\nBấm chọn 1 chủ đề bên dưới để mở bộ mới & dựng ngay Tập 1 (Công khai):",
       parse_mode: "Markdown",
       reply_markup: { inline_keyboard: keyboard },
     }),
@@ -262,12 +343,12 @@ async function triggerWorkflow(env, chatId, seriesType, seriesName, customTopic,
         series_name: seriesName,
         custom_topic: customTopic,
         start_new_book: startNewBook ? "true" : "false",
-        privacy_status: "unlisted",
+        privacy_status: "public",
       },
     }),
   });
   if (ghResp.ok) {
-    await sendMsg(env, chatId, `🚀 Đã kích hoạt dựng *${seriesName}*! Khoảng 3–5 phút nữa clip Studio v3 sẽ gửi về đây.`);
+    await sendMsg(env, chatId, `🚀 Đã kích hoạt dựng *${seriesName}* (Công khai)! Khoảng 3–5 phút nữa clip Studio v3 sẽ gửi về đây.`);
   } else {
     const err = await ghResp.text();
     await sendMsg(env, chatId, `❌ Lỗi GitHub Actions: ${ghResp.status}\n${err}`);
