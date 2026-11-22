@@ -3,46 +3,25 @@
   "series": {
     "trong_sinh": {
       "name": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 4,
-      "characters": [
-        "Phương - Nữ chính sắc bén, kiên cường",
-        "Bố Phương - Nạn nhân bị giam giữ trên máy thở",
-        "Trùm cuối bí ẩn - Chồng cũ giả chết kiếp trước, kẻ chủ mưu thật sự"
-      ],
-      "plot_summary": "Phương nhận video bố chưa chết và bị ép giao tài sản tại cảng hoang. Khi đối mặt với kẻ chủ mưu, cô bàng hoàng phát hiện đó chính là người chồng cũ tưởng đã chết từ kiếp trước, nhưng cô đã chuẩn bị sẵn sàng phản công.",
-      "last_cliffhanger": "Phương đối đầu trực diện với trùm cuối giả chết từ kiếp trước và tuyên bố phản công ngay trước khi tập 4 khép lại.",
-      "history": [
-        {
-          "episode": 1,
-          "title": "Trọng Sinh Trả Thù Chồng Tội Ác Và Tiểu Tam Giả Bố Nai | Tập 1"
-        },
-        {
-          "episode": 2,
-          "title": "Trọng Sinh Báo Thù Tập 2: Lột Mặt Mẹ Chồng Độc Ác Và Cú Lật Kèo 50 Tỷ"
-        },
-        {
-          "book": 1,
-          "episode": 3,
-          "title": "Tập 3: Bóc Trần Bản Di Chúc Bí Mật, Trùm Cuối Xuất Đầu Lộ Diện | Truyện Audio"
-        },
-        {
-          "book": 1,
-          "episode": 4,
-          "title": "Bố Trọng Sinh Chưa Chết, Kẻ Giật Dây Thật Lộ Diện | Vợ Cũ Trọng Sinh Tập 4"
-        }
-      ],
+      "genre": "trong_sinh",
       "book_number": 1,
-      "book_title": "Trọng Sinh Trả Thù: Món Nợ Máu Gia Đình"
-    },
-    "doi_thuong": {
-      "name": "Chuyện Đời Thường Ngỡ Ngàng",
+      "book_title": "Trọng Sinh Báo Thù & Tiểu Tam",
       "current_episode": 0,
       "characters": [],
       "plot_summary": "",
       "last_cliffhanger": "",
-      "history": [],
+      "history": []
+    },
+    "doi_thuong": {
+      "name": "Chuyện Đời Thường Ngỡ Ngàng",
+      "genre": "doi_thuong",
       "book_number": 1,
-      "book_title": ""
+      "book_title": "Chuyện Đời Thường Ngỡ Ngàng",
+      "current_episode": 0,
+      "characters": [],
+      "plot_summary": "",
+      "last_cliffhanger": "",
+      "history": []
     }
   }
 }
