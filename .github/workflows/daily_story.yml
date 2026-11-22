@@ -6,13 +6,9 @@ on:
   workflow_dispatch:
     inputs:
       series_type:
-        description: "Tuyen truyen (trong_sinh hoac doi_thuong)"
+        description: "Ma chu de (trong_sinh, doi_thuong, hoac slug tuy chon)"
         required: true
         default: "trong_sinh"
-        type: choice
-        options:
-          - trong_sinh
-          - doi_thuong
       custom_topic:
         description: "Chu de goi y rieng (bo trong de AI tu viet tiep)"
         required: false
@@ -43,11 +39,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+          cache: "pip"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "thumb/package.json"
 
       - name: Cai FFmpeg va Font tieng Viet
         run: |
@@ -61,7 +60,7 @@ jobs:
         working-directory: thumb
         run: npm install --silent
 
-      - name: Chay pipeline dung video va dang kenh
+      - name: Chay pipeline v3 Studio Pro
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -69,20 +68,21 @@ jobs:
           EPISODES_PER_BOOK: "5"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-          USE_GROQ_POLISH: "false"
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
           YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
           YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
           GDRIVE_FOLDER_URL: ${{ secrets.GDRIVE_FOLDER_URL }}
-          TTS_VOICE: "vi-VN-HoaiMyNeural"
-          TTS_RATE: "+3%"
+          WATERMARK_URL: "https://i.ibb.co/s91HtYWs/IMG-2119.jpg"
           TIKTOK_DURATION: "75"
           YOUTUBE_CHANNEL_URL: "https://youtube.com/@truonghoang-om2cf"
-          WATERMARK_URL: "https://i.ibb.co/s91HtYWs/IMG-2119.jpg"
+          TIKTOK_CHANNEL_URL: "https://www.tiktok.com/@scvpro11"
+          WORKER_SYNC_URL: "https://tele.scvpro748.workers.dev"
           SERIES_TYPE: ${{ github.event.inputs.series_type || github.event.client_payload.series_type || 'trong_sinh' }}
+          SERIES_NAME: ${{ github.event.client_payload.series_name || '' }}
           CUSTOM_TOPIC: ${{ github.event.inputs.custom_topic || github.event.client_payload.custom_topic || '' }}
+          START_NEW_BOOK: ${{ github.event.client_payload.start_new_book || 'false' }}
           YOUTUBE_PRIVACY: ${{ github.event.inputs.privacy_status || github.event.client_payload.privacy_status || 'unlisted' }}
         run: python src/main.py
 
