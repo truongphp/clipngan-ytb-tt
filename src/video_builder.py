@@ -72,18 +72,19 @@ def _build_single_video(
     sub_margin_v: int,
     start_offset: float = 0.0,
 ) -> Path:
+    has_subs = srt_path.exists() and srt_path.stat().st_size > 10
     sub_escaped = _escape_sub_path(srt_path)
     sub_style = (
         f"FontName=Noto Sans,FontSize={sub_font_size},Bold=1,"
         f"PrimaryColour=&H00FFFFFF,OutlineColour=&H00000000,"
         f"BorderStyle=1,Outline=2,Shadow=1,Alignment=2,MarginV={sub_margin_v}"
     )
+    sub_filter = f",subtitles='{sub_escaped}':force_style='{sub_style}'" if has_subs else ""
 
     if bg_video:
         vf = (
             f"scale={width}:{height}:force_original_aspect_ratio=increase,"
-            f"crop={width}:{height},eq=brightness=-0.06,"
-            f"subtitles='{sub_escaped}':force_style='{sub_style}'"
+            f"crop={width}:{height},eq=brightness=-0.06{sub_filter}"
         )
         cmd = [
             "ffmpeg",
@@ -122,8 +123,7 @@ def _build_single_video(
     else:
         vf = (
             f"[1:a]showwaves=s={width}x220:mode=cline:colors=0xF59E0B|0xEF4444:rate=25[waves];"
-            f"[0:v][waves]overlay=0:(H-h)/2,"
-            f"subtitles='{sub_escaped}':force_style='{sub_style}'[vout]"
+            f"[0:v][waves]overlay=0:(H-h)/2{sub_filter}[vout]"
         )
         cmd = [
             "ffmpeg",
