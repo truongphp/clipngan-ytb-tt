@@ -6,11 +6,21 @@
       "genre": "trong_sinh",
       "book_number": 1,
       "book_title": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 0,
-      "characters": [],
-      "plot_summary": "",
-      "last_cliffhanger": "",
-      "history": []
+      "current_episode": 1,
+      "characters": [
+        "Lan - Người vợ trọng sinh đầy bản lĩnh",
+        "Hùng - Người chồng phản bội hèn hạ",
+        "Người lạ mặt - Nhân vật bí ẩn xuất hiện cuối tập"
+      ],
+      "plot_summary": "Lan trọng sinh trở về đúng ngày cưới của chồng cũ với người tình. Cô công khai bằng chứng gian lận kinh tế của Hùng trước mặt quan khách, khiến hắn mất tất cả danh dự. Tuy nhiên, sự xuất hiện của một người lạ mặt cuối tập cho thấy còn một thế lực đen tối hơn đang đứng sau mọi chuyện.",
+      "last_cliffhanger": "Một người đàn ông bí ẩn xuất hiện sau khi Lan rời đi, tiết lộ rằng Hùng chỉ là con tốt trong một âm mưu lớn hơn mà Lan chưa từng biết tới ở kiếp trước.",
+      "history": [
+        {
+          "book": 1,
+          "episode": 1,
+          "title": "Vợ Cũ Trọng Sinh: Màn Trả Đũa Đẫm Máu Đêm Tân Hôn Của Chồng Cũ | Tập 1"
+        }
+      ]
     },
     "doi_thuong": {
       "name": "Chuyện Đời Thường Ngỡ Ngàng",
