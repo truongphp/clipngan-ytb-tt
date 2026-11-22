@@ -80,6 +80,7 @@ jobs:
           TTS_RATE: "+3%"
           TIKTOK_DURATION: "75"
           YOUTUBE_CHANNEL_URL: "https://youtube.com/@truonghoang-om2cf"
+          WATERMARK_URL: "https://i.ibb.co/s91HtYWs/IMG-2119.jpg"
           SERIES_TYPE: ${{ github.event.inputs.series_type || github.event.client_payload.series_type || 'trong_sinh' }}
           CUSTOM_TOPIC: ${{ github.event.inputs.custom_topic || github.event.client_payload.custom_topic || '' }}
           YOUTUBE_PRIVACY: ${{ github.event.inputs.privacy_status || github.event.client_payload.privacy_status || 'unlisted' }}
