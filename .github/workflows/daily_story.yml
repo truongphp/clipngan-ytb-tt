@@ -63,6 +63,10 @@ jobs:
 
       - name: Chay pipeline dung video va dang kenh
         env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          ASSETS_RELEASE_TAG: "assets"
+          EPISODES_PER_BOOK: "5"
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
           USE_GROQ_POLISH: "false"
