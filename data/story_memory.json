@@ -6,19 +6,24 @@
       "genre": "trong_sinh",
       "book_number": 1,
       "book_title": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 1,
+      "current_episode": 2,
       "characters": [
         "Lan - Người vợ trọng sinh đầy bản lĩnh",
         "Hùng - Người chồng phản bội hèn hạ",
-        "Người lạ mặt - Nhân vật bí ẩn xuất hiện cuối tập"
+        "Người lạ mặt - Kẻ nắm giữ bí mật tập đoàn"
       ],
-      "plot_summary": "Lan trọng sinh trở về đúng ngày cưới của chồng cũ với người tình. Cô công khai bằng chứng gian lận kinh tế của Hùng trước mặt quan khách, khiến hắn mất tất cả danh dự. Tuy nhiên, sự xuất hiện của một người lạ mặt cuối tập cho thấy còn một thế lực đen tối hơn đang đứng sau mọi chuyện.",
-      "last_cliffhanger": "Một người đàn ông bí ẩn xuất hiện sau khi Lan rời đi, tiết lộ rằng Hùng chỉ là con tốt trong một âm mưu lớn hơn mà Lan chưa từng biết tới ở kiếp trước.",
+      "plot_summary": "Lan lật tẩy được Hùng nhưng phát hiện ra hắn chỉ là con tốt trong một âm mưu rửa tiền. Cô nhận được dữ liệu về mạng lưới tội ác và bàng hoàng phát hiện cha dượng mình là kẻ chủ mưu. Lan bị đe dọa trực tiếp khi kẻ thù cử sát thủ đến nhà. Cuộc báo thù giờ đây đã biến thành cuộc chiến sinh tồn giữa Lan và gia đình giả tạo.",
+      "last_cliffhanger": "Một chiếc xe đen bí ẩn đỗ trước nhà Lan, kèm theo lời cảnh báo về sát thủ đã được cử đến. Lan sẽ làm gì để thoát khỏi tử thần ngay trong đêm nay?",
       "history": [
         {
           "book": 1,
           "episode": 1,
           "title": "Vợ Cũ Trọng Sinh: Màn Trả Đũa Đẫm Máu Đêm Tân Hôn Của Chồng Cũ | Tập 1"
+        },
+        {
+          "book": 1,
+          "episode": 2,
+          "title": "Trọng Sinh Báo Thù: Hùng chỉ là con tốt, âm mưu thực sự là gì? - Tập 2"
         }
       ]
     },
