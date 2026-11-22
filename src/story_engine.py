@@ -111,8 +111,9 @@ BỐI CẢNH CÁC TẬP TRƯỚC (BẮT BUỘC NỐI TIẾP LIỀN MẠCH):
 YÊU CẦU CẤU TRÚC KỊCH BẢN (BẮT BUỘC):
 1. Kể ở ngôi thứ nhất ("tôi"), giọng kể đời thường, sắc bén, giàu cảm xúc, câu ngắn dễ đọc thành tiếng.
 2. Độ dài phần "script_full": khoảng 1.300 đến 1.550 từ tiếng Việt (tương đương 7–10 phút đọc audio).
-3. Công thức 3 nhịp giữ chân tuyệt đối:
-   - 15 giây đầu (Hook chấn động): CẤM chào hỏi, CẤM giới thiệu lan man. Vào thẳng một câu thoại chí mạng hoặc khoảnh khắc sốc nhất.
+3. Công thức giữ chân tuyệt đối:
+   - 15 giây đầu (Hook chấn động): CẤM chào hỏi ở câu đầu tiên. Vào thẳng 2–3 câu thoại chí mạng hoặc khoảnh khắc sốc nhất.
+   - Micro-Intro ngay sau Hook (đúng 1 câu ngắn): Ngay sau 2–3 câu Hook mở màn đó, chèn tự nhiên câu: "Bạn đang nghe truyện tại kênh Audio Đi Ngủ." rồi nối liền vào mạch truyện.
    - Nửa đầu (~40%): Đẩy mâu thuẫn lên cao, để người nghe tức thay nhân vật chính.
    - Giữa truyện (~50% - Midpoint Twist): Tung ra một chi tiết lật kèo hoặc bằng chứng bất ngờ khiến cục diện đảo ngược hoàn toàn.
    {ending_rule}
