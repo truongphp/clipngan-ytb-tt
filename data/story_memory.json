@@ -3,18 +3,23 @@
   "series": {
     "trong_sinh": {
       "name": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 1,
+      "current_episode": 2,
       "characters": [
         "Phương - Nữ chính trọng sinh sắc bén, quyết đoán",
         "Hoàng Minh - Chồng cũ giả tạo, tham lam",
-        "Thanh Nhã - Tiểu tam tráo trở, bạn thân phản bội"
+        "Thanh Nhã - Tiểu tam tráo trở",
+        "Bà Lệ - Mẹ chồng độc ác, mưu mô"
       ],
-      "plot_summary": "Phương trọng sinh về mốc thời gian 3 năm trước, đúng ngày kỷ niệm ngày cưới. Nhận diện bộ mặt thật của Hoàng Minh và Thanh Nhã đang lén lút vụng trộm và âm mưu đầu độc mình, Phương không làm ầm ĩ mà âm thầm thu thập bằng chứng. Trong bữa tối lãng mạn, cô phát trực tiếp đoạn ghi âm âm mưu sát hại cô lên tivi phòng khách khiến hai kẻ phản bội bàng hoàng. Sau khi tát và đuổi Thanh Nhã ra khỏi nhà trong mưa, Phương bất ngờ nhận được tin nhắn ẩn danh tiết lộ rằng kẻ chủ mưu vụ tai nạn kiếp trước vẫn còn ẩn số khác.",
-      "last_cliffhanger": "Phương nhận được tin nhắn ẩn danh kèm ảnh vụ tai nạn kiếp trước, tiết lộ kẻ thực sự muốn hạ sát cô vẫn đang ẩn nấp ngay trong căn nhà.",
+      "plot_summary": "Trong Tập 2, Phương phát hiện mẹ chồng là bà Lệ cũng tham gia âm mưu mưu sát mình. Khi hai mẹ con Hoàng Minh cố tình dàn cảnh vu khống Phương hành hung, Phương đã phát video quay lén cảnh bà Lệ bỏ độc và cắt dây phanh xe. Đồng thời, Phương phong tỏa tài khoản 50 tỷ mà chúng biển thủ, khiến cả hai bị cảnh sát áp giải ra khỏi nhà. Cuối tập, tin nhắn ẩn danh tiết lộ một bản di chúc thứ hai bí mật trong két sắt của bố Phương.",
+      "last_cliffhanger": "Phương nhận được tin nhắn ẩn danh yêu cầu mở két sắt bí mật của người bố đã mất để tìm bản di chúc thứ hai, hé lộ một kẻ chủ mưu thực sự lớn hơn đứng sau tất cả.",
       "history": [
         {
           "episode": 1,
           "title": "Trọng Sinh Trả Thù Chồng Tội Ác Và Tiểu Tam Giả Bố Nai | Tập 1"
+        },
+        {
+          "episode": 2,
+          "title": "Trọng Sinh Báo Thù Tập 2: Lột Mặt Mẹ Chồng Độc Ác Và Cú Lật Kèo 50 Tỷ"
         }
       ]
     },
