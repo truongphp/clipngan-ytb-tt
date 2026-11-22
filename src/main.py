@@ -8,6 +8,7 @@ from release_store import download_release_assets, upload_release_asset
 from story_engine import generate_episode, reset_series_for_next_book, save_memory
 from telegram_notifier import send_text, send_thumbnail, send_tiktok_video
 from thumb_gen import generate_thumbnail
+from trend_radar import get_trend_context
 from video_builder import build_videos, merge_full_book_stream_copy
 from voice_gen import generate_multivoice_and_ass
 from youtube_uploader import upload_to_youtube
@@ -39,13 +40,21 @@ def main() -> None:
     series_name = os.getenv("SERIES_NAME", "").strip()
     custom_topic = os.getenv("CUSTOM_TOPIC", "").strip()
     start_new_book = os.getenv("START_NEW_BOOK", "false").lower() == "true"
-    privacy_status = os.getenv("YOUTUBE_PRIVACY", "unlisted").strip() or "unlisted"
+    privacy_status = os.getenv("YOUTUBE_PRIVACY", "public").strip() or "public"
 
     yt_channel = os.getenv("YOUTUBE_CHANNEL_URL", "https://youtube.com/@truonghoang-om2cf").strip()
     tt_channel = os.getenv("TIKTOK_CHANNEL_URL", "https://www.tiktok.com/@scvpro11").strip()
 
     WORK_DIR.mkdir(parents=True, exist_ok=True)
 
+    # 0. Nếu không nhập chủ đề tay, tự quét Radar Trend VN làm chất liệu bắt trend
+    if not custom_topic:
+        trend_hint = get_trend_context()
+        if trend_hint:
+            custom_topic = trend_hint
+            print(f"[Main] Đã nạp Radar Trend: {trend_hint[:120]}...")
+
+    # 1. Sinh kịch bản đa vai Nam-Nữ + phao dự phòng Groq
     episode, updated_memory = generate_episode(
         series_key=series_key,
         custom_topic=custom_topic,
@@ -59,6 +68,7 @@ def main() -> None:
     title_yt = episode["title_youtube"]
     print(f"[Main] Bộ {book_num} ({series_key}) - Tập {ep_num}: {title_yt}")
 
+    # 2. Tạo giọng đọc đa vai song song (-14 LUFS) + phụ đề Karaoke .ass
     audio_path = WORK_DIR / f"ep{ep_num:02d}_voice.mp3"
     ass_yt = WORK_DIR / f"ep{ep_num:02d}_yt.ass"
     ass_tt = WORK_DIR / f"ep{ep_num:02d}_tt.ass"
@@ -70,9 +80,13 @@ def main() -> None:
         peak_segment_index=int(episode.get("peak_segment_index", 0)),
     )
 
+    # 3. Tải clip gameplay & nhạc nền từ GitHub Release 'assets'
     gameplay_videos, bgms = fetch_media_assets(ASSETS_DIR)
+
+    # 4. Render 2 phiên bản video Studio HUD (YouTube 16:9 + TikTok 9:16 Đỉnh Cao Trào)
     yt_video, tt_video = build_videos(audio_path, ass_yt, ass_tt, gameplay_videos, bgms, WORK_DIR, peak_sec)
 
+    # Lưu bản video tập lẻ (đã chuẩn hóa codec) vào Release để cuối bộ gộp -c copy trong 5 giây
     book_tag = f"book-{series_key}-{book_num}"
     ep_archive_mp4 = WORK_DIR / f"ep{ep_num:02d}_yt.mp4"
     ep_archive_mp4.write_bytes(yt_video.read_bytes())
@@ -81,6 +95,7 @@ def main() -> None:
     except Exception as exc:
         print(f"[Main] Cảnh báo lưu tập vào Release lỗi ({exc}).")
 
+    # 5. Tạo ảnh bìa YouTube bằng Satori
     thumb_path = WORK_DIR / f"ep{ep_num:02d}_thumb.png"
     generate_thumbnail(
         badge=episode.get("thumb_badge", f"TẬP {ep_num}"),
@@ -89,6 +104,7 @@ def main() -> None:
         out_path=thumb_path,
     )
 
+    # 6. Upload tập lẻ lên YouTube (công khai + gắn chéo link TikTok)
     yt_desc = (
         f"{episode.get('youtube_description', '')}\n\n"
         f"🎧 Đăng ký kênh Audio Đi Ngủ: {yt_channel}\n"
@@ -104,9 +120,10 @@ def main() -> None:
         privacy_status=privacy_status,
     )
 
+    # 7. Gửi báo cáo + ảnh bìa + clip TikTok về Telegram
     if os.getenv("TELEGRAM_BOT_TOKEN") and os.getenv("TELEGRAM_CHAT_ID"):
         send_text(
-            f"✅ ĐÃ DỰNG XONG {book_title} — TẬP {ep_num}\n"
+            f"✅ ĐÃ LÊN SÓNG {book_title} — TẬP {ep_num}\n"
             f"📌 Tiêu đề YT: {title_yt}\n"
             f"🎬 YouTube ({privacy_status}): {youtube_url or 'Chưa upload'}\n\n"
             f"📝 Caption TikTok (copy đăng luôn):\n"
@@ -117,6 +134,7 @@ def main() -> None:
         send_thumbnail(thumb_path, caption=f"Ảnh bìa {book_title} - Tập {ep_num}")
         send_tiktok_video(tt_video, caption=f"Clip TikTok Đỉnh Cao Trào Tập {ep_num}")
 
+    # 8. Nếu là TẬP CUỐI -> Gộp Full Trọn Bộ trong 5 giây bằng -c copy + YouTube Chapters
     full_yt_url = ""
     if is_finale:
         print(f"[Main] Đủ {ep_num} tập -> gộp bản FULL TRỌN BỘ bằng Stream Copy...")
@@ -155,12 +173,13 @@ def main() -> None:
             ) or ""
             if os.getenv("TELEGRAM_BOT_TOKEN") and os.getenv("TELEGRAM_CHAT_ID"):
                 send_text(
-                    f"🔥 ĐÃ GỘP & ĐĂNG FULL TRỌN BỘ: {book_title}\n"
+                    f"🔥 ĐÃ GỘP & LÊN SÓNG FULL TRỌN BỘ: {book_title}\n"
                     f"🎬 YouTube ({privacy_status}): {full_yt_url}\n"
                     f"📚 Bộ truyện đã tự động chuyển vào mục Lịch Sử Full Bộ trên Telegram!"
                 )
                 send_thumbnail(full_thumb, caption=f"Ảnh bìa Full Trọn Bộ: {book_title}")
 
+        # Đồng bộ sang D1: đánh dấu hoàn thành & chuyển vào Lịch Sử Full Bộ
         _sync_worker_d1(
             {
                 "slug": series_key,
@@ -185,7 +204,7 @@ def main() -> None:
         )
 
     save_memory(updated_memory)
-    print("[Main] Hoàn tất toàn bộ pipeline v3 Studio Pro!")
+    print("[Main] Hoàn tất chu trình v3 Studio Pro + Trend Radar!")
 
 
 if __name__ == "__main__":
