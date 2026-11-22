@@ -153,7 +153,7 @@ def generate_episode(series_key: str = "trong_sinh", custom_topic: str = "") -> 
     prompt = _build_prompt(series_key, series_state, custom_topic)
     client = genai.Client(api_key=api_key)
 
-    models_to_try = ["gemini-2.5-flash", "gemini-2.0-flash"]
+    models_to_try = ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite"]
     last_error = None
     episode = None
 
