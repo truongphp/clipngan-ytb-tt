@@ -10,18 +10,18 @@ on:
         required: true
         default: "trong_sinh"
       custom_topic:
-        description: "Chu de goi y rieng (bo trong de AI tu viet tiep)"
+        description: "Chu de goi y rieng (bo trong de AI tu quet trend)"
         required: false
         default: ""
       privacy_status:
         description: "Che do dang YouTube"
         required: true
-        default: "unlisted"
+        default: "public"
         type: choice
         options:
+          - public
           - unlisted
           - private
-          - public
   repository_dispatch:
     types: [generate_episode]
 
@@ -60,7 +60,7 @@ jobs:
         working-directory: thumb
         run: npm install --silent
 
-      - name: Chay pipeline v3 Studio Pro
+      - name: Chay pipeline v3 Studio Pro + Trend Radar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
@@ -83,7 +83,7 @@ jobs:
           SERIES_NAME: ${{ github.event.client_payload.series_name || '' }}
           CUSTOM_TOPIC: ${{ github.event.inputs.custom_topic || github.event.client_payload.custom_topic || '' }}
           START_NEW_BOOK: ${{ github.event.client_payload.start_new_book || 'false' }}
-          YOUTUBE_PRIVACY: ${{ github.event.inputs.privacy_status || github.event.client_payload.privacy_status || 'unlisted' }}
+          YOUTUBE_PRIVACY: ${{ github.event.inputs.privacy_status || github.event.client_payload.privacy_status || 'public' }}
         run: python src/main.py
 
       - name: Luu lai bo nho cot truyen vao repo
