@@ -1,81 +1,90 @@
 name: Daily Audio Drama Pipeline
+
 on:
-schedule:
-# Chạy tự động mỗi ngày lúc 19:00 giờ Việt Nam (12:00 UTC)
-- cron: "0 12 * * *"
-workflow_dispatch:
-inputs:
-series_type:
-description: "Tuyến truyện (trong_sinh hoặc doi_thuong)"
-required: true
-default: "trong_sinh"
-type: choice
-options:
-- trong_sinh
-- doi_thuong
-custom_topic:
-description: "Chủ đề gợi ý riêng (bỏ trống để AI tự viết tiếp)"
-required: false
-default: ""
-privacy_status:
-description: "Chế độ đăng YouTube"
-required: true
-default: "unlisted"
-type: choice
-options:
-- unlisted
-- private
-- public
-repository_dispatch:
-types: [generate_episode]
+  schedule:
+    - cron: "0 12 * * *"
+  workflow_dispatch:
+    inputs:
+      series_type:
+        description: "Tuyen truyen (trong_sinh hoac doi_thuong)"
+        required: true
+        default: "trong_sinh"
+        type: choice
+        options:
+          - trong_sinh
+          - doi_thuong
+      custom_topic:
+        description: "Chu de goi y rieng (bo trong de AI tu viet tiep)"
+        required: false
+        default: ""
+      privacy_status:
+        description: "Che do dang YouTube"
+        required: true
+        default: "unlisted"
+        type: choice
+        options:
+          - unlisted
+          - private
+          - public
+  repository_dispatch:
+    types: [generate_episode]
+
 permissions:
-contents: write
+  contents: write
+
 jobs:
-build-and-publish:
-runs-on: ubuntu-latest
-steps:
-- name: Checkout repo
-uses: actions/checkout@v4
-- name: Setup Python
-uses: actions/setup-python@v5
-with:
-python-version: "3.11"
-- name: Setup Node.js (cho Satori thumbnail)
-uses: actions/setup-node@v4
-with:
-node-version: "20"
-- name: Cài FFmpeg & Font tiếng Việt Noto Sans
-run: |
-sudo apt-get update -qq
-sudo apt-get install -y -qq ffmpeg fonts-noto-core
-- name: Cài thư viện Python
-run: pip install -q -r requirements.txt
-- name: Cài Satori render thumbnail
-working-directory: thumb
-run: npm install --silent
-- name: Chạy pipeline dựng video & đăng kênh
-env:
-GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
-USE_GROQ_POLISH: "false"
-TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
-YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
-YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
-GDRIVE_FOLDER_URL: ${{ secrets.GDRIVE_FOLDER_URL }}
-TTS_VOICE: "vi-VN-HoaiMyNeural"
-TTS_RATE: "+3%"
-TIKTOK_DURATION: "75"
-YOUTUBE_CHANNEL_URL: "https://youtube.com/@truonghoang-om2cf"
-SERIES_TYPE: ${{ github.event.inputs.series_type || github.event.client_payload.series_type || 'trong_sinh' }}
-CUSTOM_TOPIC: ${{ github.event.inputs.custom_topic || github.event.client_payload.custom_topic || '' }}
-YOUTUBE_PRIVACY: ${{ github.event.inputs.privacy_status || github.event.client_payload.privacy_status || 'unlisted' }}
-run: python src/main.py
-- name: Lưu lại bộ nhớ cốt truyện vào repo
-run: |
-git config user.name "clipngan-bot"
-git config user.email "bot@users.noreply.github.com"
-git add data/story_memory.json
-git diff --staged --quiet || git commit -m "chore: cap nhat story_memory sau tap moi"
-git push
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Cai FFmpeg va Font tieng Viet
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-noto-core
+
+      - name: Cai thu vien Python
+        run: pip install -q -r requirements.txt
+
+      - name: Cai Satori render thumbnail
+        working-directory: thumb
+        run: npm install --silent
+
+      - name: Chay pipeline dung video va dang kenh
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          USE_GROQ_POLISH: "false"
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          YOUTUBE_CLIENT_ID: ${{ secrets.YOUTUBE_CLIENT_ID }}
+          YOUTUBE_CLIENT_SECRET: ${{ secrets.YOUTUBE_CLIENT_SECRET }}
+          YOUTUBE_REFRESH_TOKEN: ${{ secrets.YOUTUBE_REFRESH_TOKEN }}
+          GDRIVE_FOLDER_URL: ${{ secrets.GDRIVE_FOLDER_URL }}
+          TTS_VOICE: "vi-VN-HoaiMyNeural"
+          TTS_RATE: "+3%"
+          TIKTOK_DURATION: "75"
+          YOUTUBE_CHANNEL_URL: "https://youtube.com/@truonghoang-om2cf"
+          SERIES_TYPE: ${{ github.event.inputs.series_type || github.event.client_payload.series_type || 'trong_sinh' }}
+          CUSTOM_TOPIC: ${{ github.event.inputs.custom_topic || github.event.client_payload.custom_topic || '' }}
+          YOUTUBE_PRIVACY: ${{ github.event.inputs.privacy_status || github.event.client_payload.privacy_status || 'unlisted' }}
+        run: python src/main.py
+
+      - name: Luu lai bo nho cot truyen vao repo
+        run: |
+          git config user.name "clipngan-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add data/story_memory.json
+          git diff --staged --quiet || git commit -m "chore: cap nhat story_memory sau tap moi"
+          git push
