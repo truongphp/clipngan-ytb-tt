@@ -3,15 +3,16 @@
   "series": {
     "trong_sinh": {
       "name": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 2,
+      "current_episode": 3,
       "characters": [
         "Phương - Nữ chính trọng sinh sắc bén, quyết đoán",
-        "Hoàng Minh - Chồng cũ giả tạo, tham lam",
-        "Thanh Nhã - Tiểu tam tráo trở",
-        "Bà Lệ - Mẹ chồng độc ác, mưu mô"
+        "Hoàng Minh - Chồng cũ giả tạo đã bị bắt",
+        "Thanh Nhã - Tiểu tam tráo trở, con rơi của ông Quốc",
+        "Bà Lệ - Mẹ chồng độc ác đã bị bắt",
+        "Ông Quốc - Chú ruột, kẻ chủ mưu thâu tóm gia sản"
       ],
-      "plot_summary": "Trong Tập 2, Phương phát hiện mẹ chồng là bà Lệ cũng tham gia âm mưu mưu sát mình. Khi hai mẹ con Hoàng Minh cố tình dàn cảnh vu khống Phương hành hung, Phương đã phát video quay lén cảnh bà Lệ bỏ độc và cắt dây phanh xe. Đồng thời, Phương phong tỏa tài khoản 50 tỷ mà chúng biển thủ, khiến cả hai bị cảnh sát áp giải ra khỏi nhà. Cuối tập, tin nhắn ẩn danh tiết lộ một bản di chúc thứ hai bí mật trong két sắt của bố Phương.",
-      "last_cliffhanger": "Phương nhận được tin nhắn ẩn danh yêu cầu mở két sắt bí mật của người bố đã mất để tìm bản di chúc thứ hai, hé lộ một kẻ chủ mưu thực sự lớn hơn đứng sau tất cả.",
+      "plot_summary": "Sau khi tống giam Hoàng Minh và bà Lệ, Phương mở két sắt của bố và tìm thấy bản di chúc thứ hai cùng kết quả ADN. Cô phát hiện Thanh Nhã chính là con rơi của chú ruột - ông Quốc, kẻ đứng sau giật dây toàn bộ vụ mưu sát. Tại cuộc họp HĐQT, Phương tung băng ghi âm và di chúc thật khiến ông Quốc và Thanh Nhã bị cảnh sát bắt giữ khẩn cấp. Đúng lúc tưởng như ván bài kết thúc, Phương nhận được cuộc gọi video ẩn danh tiết lộ bố cô chưa chết mà đang bị khống chế bởi một kẻ chủ mưu giấu mặt khác.",
+      "last_cliffhanger": "Phương nhận được cuộc gọi video ẩn danh cho thấy bố cô vẫn còn sống trên máy thở trong một căn phòng bí mật và kẻ bắt giữ yêu cầu cô giao nộp toàn bộ tài sản trước 8 giờ sáng mai.",
       "history": [
         {
           "episode": 1,
@@ -20,8 +21,15 @@
         {
           "episode": 2,
           "title": "Trọng Sinh Báo Thù Tập 2: Lột Mặt Mẹ Chồng Độc Ác Và Cú Lật Kèo 50 Tỷ"
+        },
+        {
+          "book": 1,
+          "episode": 3,
+          "title": "Tập 3: Bóc Trần Bản Di Chúc Bí Mật, Trùm Cuối Xuất Đầu Lộ Diện | Truyện Audio"
         }
-      ]
+      ],
+      "book_number": 1,
+      "book_title": "Trọng Sinh Trả Thù: Món Nợ Máu Gia Đình"
     },
     "doi_thuong": {
       "name": "Chuyện Đời Thường Ngỡ Ngàng",
@@ -29,7 +37,9 @@
       "characters": [],
       "plot_summary": "",
       "last_cliffhanger": "",
-      "history": []
+      "history": [],
+      "book_number": 1,
+      "book_title": ""
     }
   }
 }
