@@ -150,18 +150,43 @@ def _call_groq_fallback(prompt: str) -> dict:
         raise RuntimeError("Không có GROQ_API_KEY để dự phòng.")
     from groq import Groq
 
-    print("[StoryEngine] Chuyển sang phao dự phòng Groq (llama-3.3-70b-versatile)...")
-    client = Groq(api_key=groq_key)
-    resp = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        temperature=0.8,
-        response_format={"type": "json_object"},
-        messages=[
-            {"role": "system", "content": "Bạn là biên kịch audio drama tiếng Việt, luôn trả về JSON hợp lệ."},
-            {"role": "user", "content": prompt},
-        ],
-    )
-    return _extract_json(resp.choices[0].message.content or "")
+    client = Groq(api_key=groq_key, timeout=45.0)
+    candidates = [
+        "openai/gpt-oss-120b",
+        "llama-3.3-70b-versatile",
+        "openai/gpt-oss-20b",
+        "llama-3.1-8b-instant",
+    ]
+    try:
+        available = [
+            m.id
+            for m in client.models.list().data
+            if not any(x in m.id.lower() for x in ["whisper", "guard", "tts", "playai"])
+        ]
+        for mid in available:
+            if mid not in candidates:
+                candidates.append(mid)
+    except Exception:
+        pass
+
+    last_groq_err = None
+    for model_id in candidates:
+        try:
+            print(f"[StoryEngine] Thử phao dự phòng Groq ({model_id})...")
+            resp = client.chat.completions.create(
+                model=model_id,
+                temperature=0.8,
+                response_format={"type": "json_object"},
+                messages=[
+                    {"role": "system", "content": "Bạn là biên kịch audio drama tiếng Việt, luôn trả về JSON hợp lệ."},
+                    {"role": "user", "content": prompt},
+                ],
+            )
+            return _extract_json(resp.choices[0].message.content or "")
+        except Exception as exc:
+            print(f"[StoryEngine] Groq {model_id} lỗi: {exc}")
+            last_groq_err = exc
+    raise RuntimeError(last_groq_err or "Không gọi được model Groq nào.")
 
 
 def generate_episode(
@@ -190,8 +215,13 @@ def generate_episode(
     gemini_key = os.getenv("GEMINI_API_KEY", "").strip()
 
     if gemini_key:
-        client = genai.Client(api_key=gemini_key)
-        for model_name in ["gemini-3.8-flash", "gemini-3.6-flash", "gemini-3.5-flash-lite"]:
+        client = genai.Client(api_key=gemini_key, http_options=types.HttpOptions(timeout=45000))
+        for model_name in [
+            "gemini-3.8-flash",
+            "gemini-3.6-flash",
+            "gemini-3.1-flash-lite",
+            "gemini-flash-latest",
+        ]:
             try:
                 print(f"[StoryEngine] Đang tạo kịch bản đa vai bằng {model_name}...")
                 response = client.models.generate_content(
@@ -214,6 +244,7 @@ def generate_episode(
         except Exception as groq_exc:
             raise RuntimeError(f"Cả Gemini ({last_error}) và Groq ({groq_exc}) đều lỗi.")
 
+    # Chuẩn hóa segments nếu model trả về script_full thay vì segments
     segments = episode.get("segments")
     if not segments or not isinstance(segments, list):
         fallback_text = episode.get("script_full", "")
