@@ -1,21 +1,30 @@
 {
-"active_series": "trong_sinh",
-"series": {
-"trong_sinh": {
-"name": "Trọng Sinh Báo Thù & Tiểu Tam",
-"current_episode": 0,
-"characters": [],
-"plot_summary": "",
-"last_cliffhanger": "",
-"history": []
-},
-"doi_thuong": {
-"name": "Chuyện Đời Thường Ngỡ Ngàng",
-"current_episode": 0,
-"characters": [],
-"plot_summary": "",
-"last_cliffhanger": "",
-"history": []
-}
-}
+  "active_series": "trong_sinh",
+  "series": {
+    "trong_sinh": {
+      "name": "Trọng Sinh Báo Thù & Tiểu Tam",
+      "current_episode": 1,
+      "characters": [
+        "Phương - Nữ chính trọng sinh sắc bén, quyết đoán",
+        "Hoàng Minh - Chồng cũ giả tạo, tham lam",
+        "Thanh Nhã - Tiểu tam tráo trở, bạn thân phản bội"
+      ],
+      "plot_summary": "Phương trọng sinh về mốc thời gian 3 năm trước, đúng ngày kỷ niệm ngày cưới. Nhận diện bộ mặt thật của Hoàng Minh và Thanh Nhã đang lén lút vụng trộm và âm mưu đầu độc mình, Phương không làm ầm ĩ mà âm thầm thu thập bằng chứng. Trong bữa tối lãng mạn, cô phát trực tiếp đoạn ghi âm âm mưu sát hại cô lên tivi phòng khách khiến hai kẻ phản bội bàng hoàng. Sau khi tát và đuổi Thanh Nhã ra khỏi nhà trong mưa, Phương bất ngờ nhận được tin nhắn ẩn danh tiết lộ rằng kẻ chủ mưu vụ tai nạn kiếp trước vẫn còn ẩn số khác.",
+      "last_cliffhanger": "Phương nhận được tin nhắn ẩn danh kèm ảnh vụ tai nạn kiếp trước, tiết lộ kẻ thực sự muốn hạ sát cô vẫn đang ẩn nấp ngay trong căn nhà.",
+      "history": [
+        {
+          "episode": 1,
+          "title": "Trọng Sinh Trả Thù Chồng Tội Ác Và Tiểu Tam Giả Bố Nai | Tập 1"
+        }
+      ]
+    },
+    "doi_thuong": {
+      "name": "Chuyện Đời Thường Ngỡ Ngàng",
+      "current_episode": 0,
+      "characters": [],
+      "plot_summary": "",
+      "last_cliffhanger": "",
+      "history": []
+    }
+  }
 }
