@@ -54,19 +54,24 @@
       "genre": "drama_gia_dinh_toi_that_uc_c",
       "book_number": 1,
       "book_title": "drama gia đình tôi thật ức chế",
-      "current_episode": 1,
+      "current_episode": 2,
       "characters": [
-        "Lan - Người vợ bị phản bội",
-        "Hùng - Người chồng ngoại tình",
-        "Trinh - Tiểu tam hám danh"
+        "Lan - Người vợ thông minh, chuyên gia tài chính",
+        "Hùng - Người chồng phản bội, tham lam",
+        "Trinh - Tiểu tam vỡ nợ, đào mỏ"
       ],
-      "plot_summary": "Lan bị gia đình chồng ép ly hôn để đón tiểu tam khoe thẻ đen vào nhà. Không cam chịu, Lan tung bằng chứng thao túng tài chính của chồng để phản đòn. Kết thúc tập 1, Lan hé lộ mình nắm quyền quản lý tài khoản của tiểu tam, mở đầu cho màn trả thù tàn khốc.",
-      "last_cliffhanger": "Cái thẻ đen của tiểu tam bị khóa, và Hùng bắt đầu nhận ra người vợ 'hiền lành' mình từng coi thường lại chính là người nắm giữ vận mệnh tài chính của anh ta.",
+      "plot_summary": "Trong Tập 2, Lan chính thức khóa thẻ đen và lấy lại căn hộ mà Hùng dùng tiền quỹ để cho Trinh ở. Sự thật Trinh là kẻ vỡ nợ cờ bạc bị phơi bày khiến Hùng và Trinh quay sang cãi vã, hành hung nhau công khai. Trinh bỏ đi, Hùng quỳ xuống xin Lan tha thứ nhưng bị từ chối lạnh lùng. Tuy nhiên, khi công an đột ngột đến bắt Hùng theo một lá đơn tố giác bí ẩn, Lan nhận được tin nhắn từ một nhân vật thần bí xưng là người quen cũ.",
+      "last_cliffhanger": "Công an đến bắt Hùng dựa trên bằng chứng do một kẻ ẩn danh bí ẩn gửi tới, kẻ này vừa nhắn tin mời Lan hợp tác.",
       "history": [
         {
           "book": 1,
           "episode": 1,
           "title": "Tiểu tam khoe thẻ đen, mẹ chồng đuổi tôi ra khỏi nhà - Tập 1"
+        },
+        {
+          "book": 1,
+          "episode": 2,
+          "title": "Tập 2: Thẻ Đen Bị Khóa, Tiểu Tam Vỡ Nợ Và Cú Lật Kèo Đỉnh Cao | Audio Đi Ngủ"
         }
       ]
     }
