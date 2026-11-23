@@ -1,15 +1,19 @@
 {
-  "active_series": "drama_gia_dinh_toi_that_uc_c",
+  "active_series": "trong_sinh",
   "series": {
     "trong_sinh": {
       "name": "Trọng Sinh Báo Thù & Tiểu Tam",
       "genre": "trong_sinh",
       "book_number": 2,
       "book_title": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 0,
-      "characters": [],
-      "plot_summary": "",
-      "last_cliffhanger": "",
+      "current_episode": 1,
+      "characters": [
+        "Hà - Nữ chính trọng sinh báo thù",
+        "Tuấn - Chồng bội bạc tham lam",
+        "Thảo - Tiểu tam mưu mô giả danh em họ"
+      ],
+      "plot_summary": "Hà trọng sinh về 3 năm trước khi bị Tuấn và Thảo hại chết. Tuấn dụ Hà bán 50 cây vàng thừa kế để đầu tư. Hà giả vờ đồng ý nhưng gài hợp đồng ràng buộc pháp lý và tráo vàng giả cho Tuấn đem đi giao dịch. Đêm đó, Hà tráo ly nước có độc mà Thảo chuẩn bị cho mình sang cho Tuấn, đồng thời phát hiện ra tin nhắn hé lộ cái chết của bố mình năm xưa là do bị sát hại.",
+      "last_cliffhanger": "Hà phát hiện tin nhắn tống tiền trong máy Tuấn hé lộ cái chết của bố cô 3 năm trước không phải do bệnh tật mà là bị sát hại có kế hoạch.",
       "history": [
         {
           "book": 1,
@@ -35,6 +39,11 @@
           "book": 1,
           "episode": 5,
           "title": "KẺ GIẬT DÂY BỊ LỘ DIỆN: CÁI KẾT ĐẮNG CHO GÃ CHỒNG TỒI - TẬP 5"
+        },
+        {
+          "book": 2,
+          "episode": 1,
+          "title": "Trọng Sinh Báo Thù Tập 1: Bẫy Hợp Đồng Tráo 50 Cây Vàng Trừng Phạt Chồng Tệ Bạc"
         }
       ]
     },
