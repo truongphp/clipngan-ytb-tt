@@ -3,6 +3,7 @@ from pathlib import Path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
 from googleapiclient.http import MediaFileUpload
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
@@ -34,7 +35,7 @@ def upload_to_youtube(
     title: str,
     description: str,
     tags: list[str],
-    privacy_status: str = "unlisted",
+    privacy_status: str = "public",
 ) -> str | None:
     youtube = _get_youtube_service()
     if youtube is None:
@@ -46,7 +47,7 @@ def upload_to_youtube(
             "title": title[:100],
             "description": description,
             "tags": tags[:15],
-            "categoryId": "24",
+            "categoryId": "24",  # Entertainment
             "defaultLanguage": "vi",
             "defaultAudioLanguage": "vi",
         },
@@ -60,11 +61,21 @@ def upload_to_youtube(
     request = youtube.videos().insert(part="snippet,status", body=body, media_body=media)
 
     print(f"[YouTube] Đang upload '{title}' ({privacy_status})...")
-    response = None
-    while response is None:
-        status, response = request.next_chunk()
-        if status:
-            print(f"[YouTube] Tiến độ upload: {int(status.progress() * 100)}%")
+    try:
+        response = None
+        while response is None:
+            status, response = request.next_chunk()
+            if status:
+                print(f"[YouTube] Tiến độ upload: {int(status.progress() * 100)}%")
+    except HttpError as exc:
+        if "uploadLimitExceeded" in str(exc):
+            print("[YouTube] Kênh đã chạm giới hạn đăng video trong 24h (uploadLimitExceeded). Vẫn tiếp tục gửi clip về Telegram.")
+            return None
+        print(f"[YouTube] Lỗi upload YouTube: {exc}")
+        return None
+    except Exception as exc:
+        print(f"[YouTube] Lỗi upload YouTube: {exc}")
+        return None
 
     video_id = response["id"]
     video_url = f"https://youtu.be/{video_id}"
