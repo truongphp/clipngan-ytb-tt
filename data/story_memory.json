@@ -1,5 +1,5 @@
 {
-  "active_series": "trong_sinh",
+  "active_series": "drama_gia_dinh_toi_that_uc_c",
   "series": {
     "trong_sinh": {
       "name": "Trọng Sinh Báo Thù & Tiểu Tam",
@@ -48,6 +48,27 @@
       "plot_summary": "",
       "last_cliffhanger": "",
       "history": []
+    },
+    "drama_gia_dinh_toi_that_uc_c": {
+      "name": "drama gia đình tôi thật ức chế",
+      "genre": "drama_gia_dinh_toi_that_uc_c",
+      "book_number": 1,
+      "book_title": "drama gia đình tôi thật ức chế",
+      "current_episode": 1,
+      "characters": [
+        "Lan - Người vợ bị phản bội",
+        "Hùng - Người chồng ngoại tình",
+        "Trinh - Tiểu tam hám danh"
+      ],
+      "plot_summary": "Lan bị gia đình chồng ép ly hôn để đón tiểu tam khoe thẻ đen vào nhà. Không cam chịu, Lan tung bằng chứng thao túng tài chính của chồng để phản đòn. Kết thúc tập 1, Lan hé lộ mình nắm quyền quản lý tài khoản của tiểu tam, mở đầu cho màn trả thù tàn khốc.",
+      "last_cliffhanger": "Cái thẻ đen của tiểu tam bị khóa, và Hùng bắt đầu nhận ra người vợ 'hiền lành' mình từng coi thường lại chính là người nắm giữ vận mệnh tài chính của anh ta.",
+      "history": [
+        {
+          "book": 1,
+          "episode": 1,
+          "title": "Tiểu tam khoe thẻ đen, mẹ chồng đuổi tôi ra khỏi nhà - Tập 1"
+        }
+      ]
     }
   }
 }
