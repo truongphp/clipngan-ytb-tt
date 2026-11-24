@@ -6,14 +6,14 @@
       "genre": "trong_sinh",
       "book_number": 2,
       "book_title": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 1,
+      "current_episode": 2,
       "characters": [
-        "Hà - Nữ chính trọng sinh báo thù",
-        "Tuấn - Chồng bội bạc tham lam",
-        "Thảo - Tiểu tam mưu mô giả danh em họ"
+        "Hà - Nữ chính báo thù",
+        "Tuấn - Chồng bội bạc",
+        "Thảo - Tiểu tam mưu mô"
       ],
-      "plot_summary": "Hà trọng sinh về 3 năm trước khi bị Tuấn và Thảo hại chết. Tuấn dụ Hà bán 50 cây vàng thừa kế để đầu tư. Hà giả vờ đồng ý nhưng gài hợp đồng ràng buộc pháp lý và tráo vàng giả cho Tuấn đem đi giao dịch. Đêm đó, Hà tráo ly nước có độc mà Thảo chuẩn bị cho mình sang cho Tuấn, đồng thời phát hiện ra tin nhắn hé lộ cái chết của bố mình năm xưa là do bị sát hại.",
-      "last_cliffhanger": "Hà phát hiện tin nhắn tống tiền trong máy Tuấn hé lộ cái chết của bố cô 3 năm trước không phải do bệnh tật mà là bị sát hại có kế hoạch.",
+      "plot_summary": "Hà vạch trần được âm mưu sát hại cha mình của Tuấn thông qua các tin nhắn tống tiền. Cô sử dụng chính ly nước độc của Thảo để khiến Tuấn thú tội trong đau đớn. Tuy nhiên, Thảo xuất hiện và lật kèo bằng cách bắt giữ mẹ của Hà làm con tin, khiến cục diện trở nên vô cùng căng thẳng.",
+      "last_cliffhanger": "Mẹ của Hà bị Thảo bắt làm con tin để uy hiếp, buộc Hà phải lựa chọn giữa việc báo thù cho cha hay cứu mạng mẹ.",
       "history": [
         {
           "book": 1,
@@ -44,6 +44,11 @@
           "book": 2,
           "episode": 1,
           "title": "Trọng Sinh Báo Thù Tập 1: Bẫy Hợp Đồng Tráo 50 Cây Vàng Trừng Phạt Chồng Tệ Bạc"
+        },
+        {
+          "book": 2,
+          "episode": 2,
+          "title": "Tập 2: Máu Nhuộm Đêm Tân Hôn, Bí Mật Đằng Sau Cái Chết Của Cha Tôi"
         }
       ]
     },
