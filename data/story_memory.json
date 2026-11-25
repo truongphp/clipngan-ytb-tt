@@ -6,14 +6,14 @@
       "genre": "trong_sinh",
       "book_number": 2,
       "book_title": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 2,
+      "current_episode": 3,
       "characters": [
         "Hà - Nữ chính báo thù",
         "Tuấn - Chồng bội bạc",
         "Thảo - Tiểu tam mưu mô"
       ],
-      "plot_summary": "Hà vạch trần được âm mưu sát hại cha mình của Tuấn thông qua các tin nhắn tống tiền. Cô sử dụng chính ly nước độc của Thảo để khiến Tuấn thú tội trong đau đớn. Tuy nhiên, Thảo xuất hiện và lật kèo bằng cách bắt giữ mẹ của Hà làm con tin, khiến cục diện trở nên vô cùng căng thẳng.",
-      "last_cliffhanger": "Mẹ của Hà bị Thảo bắt làm con tin để uy hiếp, buộc Hà phải lựa chọn giữa việc báo thù cho cha hay cứu mạng mẹ.",
+      "plot_summary": "Hà lừa được Tuấn và Thảo bằng màn kịch giả danh con tin, khiến cảnh sát bắt giữ cặp đôi này thành công. Tuy nhiên, khi tưởng chừng đã thắng, Hà nhận được một cuộc gọi đe dọa từ một kẻ bí ẩn đứng sau tất cả. Nỗi sợ hãi bao trùm khi mục tiêu của kẻ thù thực sự lại chính là mẹ của cô. Hành trình báo thù của Hà từ đây bước sang một chương tàn khốc và bí ẩn hơn.",
+      "last_cliffhanger": "Hà nhận được cuộc gọi từ kẻ đứng sau màn kịch lớn, đe dọa trực tiếp đến tính mạng của mẹ cô nếu cô không tuân theo mệnh lệnh của hắn.",
       "history": [
         {
           "book": 1,
@@ -49,6 +49,11 @@
           "book": 2,
           "episode": 2,
           "title": "Tập 2: Máu Nhuộm Đêm Tân Hôn, Bí Mật Đằng Sau Cái Chết Của Cha Tôi"
+        },
+        {
+          "book": 2,
+          "episode": 3,
+          "title": "Drama gia đình cực sốc: Mẹ bị bắt làm con tin, cái giá phải trả cho sự phản bội - Tập 3"
         }
       ]
     },
