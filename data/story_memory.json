@@ -6,14 +6,15 @@
       "genre": "trong_sinh",
       "book_number": 2,
       "book_title": "Trọng Sinh Báo Thù & Tiểu Tam",
-      "current_episode": 3,
+      "current_episode": 4,
       "characters": [
-        "Hà - Nữ chính báo thù",
-        "Tuấn - Chồng bội bạc",
-        "Thảo - Tiểu tam mưu mô"
+        "Hà - Nữ chính thông minh sắc sảo",
+        "Tuấn - Chồng cũ bội bạc",
+        "Thảo - Tiểu tam mưu mô",
+        "Người bác họ - Kẻ phản diện giấu mặt"
       ],
-      "plot_summary": "Hà lừa được Tuấn và Thảo bằng màn kịch giả danh con tin, khiến cảnh sát bắt giữ cặp đôi này thành công. Tuy nhiên, khi tưởng chừng đã thắng, Hà nhận được một cuộc gọi đe dọa từ một kẻ bí ẩn đứng sau tất cả. Nỗi sợ hãi bao trùm khi mục tiêu của kẻ thù thực sự lại chính là mẹ của cô. Hành trình báo thù của Hà từ đây bước sang một chương tàn khốc và bí ẩn hơn.",
-      "last_cliffhanger": "Hà nhận được cuộc gọi từ kẻ đứng sau màn kịch lớn, đe dọa trực tiếp đến tính mạng của mẹ cô nếu cô không tuân theo mệnh lệnh của hắn.",
+      "plot_summary": "Hà nhận được tin mẹ bị bắt cóc bởi một kẻ đứng sau giật dây Tuấn và Thảo. Cô giả vờ thỏa hiệp để đánh lạc hướng kẻ bắt cóc. Sau đó, Hà dụ được gã bác họ, kẻ chủ mưu thực sự, vào bẫy của cảnh sát. Tuy nhiên, sau khi hắn bị bắt, một tin nhắn bí ẩn gửi đến cho thấy vẫn còn một thế lực nguy hiểm hơn đang chờ đợi cô.",
+      "last_cliffhanger": "Hà phát hiện ra gã bác họ chỉ là con tốt thí, kẻ chủ mưu thật sự vẫn đang theo dõi cô từ trong bóng tối và đã gửi lời đe dọa trực tiếp sau khi hắn bị bắt.",
       "history": [
         {
           "book": 1,
@@ -54,6 +55,11 @@
           "book": 2,
           "episode": 3,
           "title": "Drama gia đình cực sốc: Mẹ bị bắt làm con tin, cái giá phải trả cho sự phản bội - Tập 3"
+        },
+        {
+          "book": 2,
+          "episode": 4,
+          "title": "Mẹ Tôi Bị Bắt Cóc - Trọng Sinh Báo Thù Tập 4 | Kẻ Đứng Sau Lộ Diện"
         }
       ]
     },
